@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {ObjectId}=require('mongodb')
+const {ObjectId,MongoClient}=require('mongodb')
 const express=require('express')
 const bodyParser=require('body-parser')
 
@@ -33,26 +33,37 @@ app.get('/mons',(req,res)=>{
 })
 app.get('/mons/:id',(req,res)=>{
 	var id=req.params.id
-	 console.log(id)
 	if(!ObjectId.isValid(id)){
 		return res.status(404).send();
-  }
-  mon.findById(id).then((mons)=>{
-     console.log(mons)
+    }
+   mon.findById(id).then((mons)=>{
+        res.send({mons})
      },(err)=>{
-		console.log('Data not Found')
+		res.status(400).send(err)
 	 })
   })
+
+ app.get('/mons1/:title',(req,res)=>{
+ 	console.log(req.params)
+	var title=req.params.title
+	
+	mon.find({"title":title}).then((mons)=>{
+     res.send({mons})
+     },(err)=>{
+		res.status(400).send(err)
+	 })
+  })
+
 
   app.delete('/mons/:id',(req,res)=>{
   	var id=req.params.id
     if(!ObjectId.isValid(id)){
-		return console.log('Invalid id error of 404')
+		return res.status(404).send();
 	}
 	mon.findByIdAndRemove(id).then((mons)=>{
-		console.log(mons)
+		 res.send({mons})
     },(err)=>{
-		console.log('Not found error of 400')
+		res.status(400).send(err)
 	})
 })
    app.patch('/mons/:id', (req,res) => {
@@ -72,6 +83,12 @@ app.get('/mons/:id',(req,res)=>{
 });
 
 
+
+
+
 app.listen(3000,()=>{
 	console.log('Started on port 3000')
 })
+
+
+

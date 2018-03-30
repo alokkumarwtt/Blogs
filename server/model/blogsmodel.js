@@ -1,6 +1,6 @@
 const validator=require('validator')
 const mongoose=require('mongoose')
-var mon=mongoose.model('Blogs',{
+var mon=mongoose.model('BlogsData',{
 	title:{
 		type:String,
 	    required:true,
@@ -8,7 +8,8 @@ var mon=mongoose.model('Blogs',{
 	    },
 	  tags:{
         type:String,
-        default:null
+        default:null,
+        multi:true
 
 	  },
 	  body:{
