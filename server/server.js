@@ -4,25 +4,62 @@ const express=require('express')
 const bodyParser=require('body-parser')
 
 var {mongoose}=require('./db/mongoose.js')
-var {mon}=require('./model/blogsmodel.js')
+var {User}=require('./model/blogsmodel.js')
+//var {authenticate} = require('./middleware/middleware.js');
 var app=express()
 app.use(bodyParser.json());
-app.post('/mons',(req,res)=>{
-	var mon1=new mon({
-		title:req.body.title,
-		tags:req.body.tags,
-		body:req.body.body,
-		author:req.body.author,
-		creation_date:req.body.creation_date,
-		update_date:req.body.update_date,
-		status:req.body.status
+app.post('/users', (req, res) => {
+	var body = _.pick(req.body, ['title', 'tags','body', 'author','creation_date','update_date','status']);
+	var user = new User(body);
+  
+	user.save().then(() => {
+	  return user.generateAuthToken();
+	}).then((token) => {
+	  res.header('x-auth', token).send(user);
+	}).catch((e) => {
+	  res.status(400).send(e);
 	})
-	mon1.save().then((doc)=>{
-    res.send(doc)
-    },(e)=>{
-    res.status(400).send(e)
-})
-})
+  });
+
+  app.get('/users/me', (req, res) => {
+	var token = req.header('x-auth');
+
+	User.findByToken(token).then((user) => {
+	  if (!user) {
+		return Promise.reject();
+	  }
+      res.send(user)
+	}).catch((e) => {
+	  res.status(401).send();
+	});
+
+  });
+  app.delete('/users/del', (req, res) => {
+	var token = req.header('x-auth');
+
+	User.findByToken(token).then((user) => {
+	  if (!user) {
+		return Promise.reject();
+	  }
+      res.send(user)
+	}).catch((e) => {
+	  res.status(401).send();
+	});
+
+  });
+  app.patch('/users/upd', (req, res) => {
+	var token = req.header('x-auth');
+
+	User.findByToken(token).then((user) => {
+	  if (!user) {
+		return Promise.reject();
+	  }
+      res.send(user)
+	}).catch((e) => {
+	  res.status(401).send();
+	});
+
+  });
 app.get('/mons',(req,res)=>{
 	mon.find().then((mons)=>{
 		res.send({mons})
