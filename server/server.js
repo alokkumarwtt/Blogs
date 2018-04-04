@@ -8,7 +8,7 @@ var {User}=require('./model/blogsmodel.js')
 //var {authenticate} = require('./middleware/middleware.js');
 var app=express()
 app.use(bodyParser.json());
-app.post('/users', (req, res) => {
+app.post('/blogs', (req, res) => {
 	var body = _.pick(req.body, ['title', 'tags','body', 'author','creation_date','update_date','status']);
 	var user = new User(body);
   
@@ -21,7 +21,7 @@ app.post('/users', (req, res) => {
 	})
   });
 
-  app.get('/users/me', (req, res) => {
+  app.get('/blogs/get', (req, res) => {
 	var token = req.header('x-auth');
 
 	User.findByToken(token).then((user) => {
@@ -34,7 +34,7 @@ app.post('/users', (req, res) => {
 	});
 
   });
-  app.delete('/users/del', (req, res) => {
+  app.delete('/blogs/del', (req, res) => {
 	var token = req.header('x-auth');
 
 	User.findByToken(token).then((user) => {
@@ -47,7 +47,7 @@ app.post('/users', (req, res) => {
 	});
 
   });
-  app.patch('/users/upd', (req, res) => {
+  app.patch('/blogs/upd', (req, res) => {
 	var token = req.header('x-auth');
 
 	User.findByToken(token).then((user) => {

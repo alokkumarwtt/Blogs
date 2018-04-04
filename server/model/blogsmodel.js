@@ -6,21 +6,25 @@ var BlogSchema = new mongoose.Schema({
 		title:{
 			type:String,
 			required:true,
-			trim:true
+			trim:true,
+			unique:true
 			},
 		  tags:{
 			type:String,
 			default:null,
-			multi:true
+			multi:true,
+			unique:true
 	
 		  },
 		  body:{
 			type:String,
-			default:null
+			default:null,
+			unique:true
 		  },
 		  author:{
 			type:String,
-			default:null
+			default:null,
+			unique:true
 		  },
 		  creation_date:{
 			  type: String, 
@@ -32,7 +36,8 @@ var BlogSchema = new mongoose.Schema({
 		  },
 		  status:{
 			type:String,
-			default:null
+			default:null,
+			unique:true
 		  },
 		 tokens: [{
 		access: {
@@ -86,29 +91,29 @@ var BlogSchema = new mongoose.Schema({
 		  return Promise.reject();
 		}
 	  
-		return User.findOneAndRemove({
+		return user.findOneAndRemove({
 		  '_id': decoded._id,
 		  'tokens.token': token,
 		  'tokens.access': 'auth'
 		});
 	  };
-	  BlogSchema.statics.findByToken = function (token) {
-		var user = this;
-		var decoded;
+	 //  BlogSchema.statics.findByToken = function (token) {
+		// var user = this;
+		// var decoded;
 	  
-		try {
-		  decoded = jwt.verify(token, 'abc123');
-		} catch (e) {
-		  return Promise.reject();
-		}
+		// try {
+		//   decoded = jwt.verify(token, 'abc123');
+		// } catch (e) {
+		//   return Promise.reject();
+		// }
 	  
-		return User.find({
-		  '_id': decoded._id,
-		  'tokens.token': token,
-		  'tokens.access': 'auth'
-		});
-	  };
+		// return User.find({
+		//   '_id': decoded._id,
+		//   'tokens.token': token,
+		//   'tokens.access': 'auth'
+		// });
+	 //  };
 	  
 
-var User=mongoose.model('Data',BlogSchema);
+var User=mongoose.model('blogsdatas',BlogSchema);
 module.exports={User}
